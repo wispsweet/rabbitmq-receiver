@@ -85,16 +85,19 @@ public class ManualDirectReceiver implements ChannelAwareMessageListener {
             String messageData=(String) map.get("messageData");
             String createTime=(String) map.get("createTime");
             System.out.println("ManualMessageId:"+messageId+"  ManualMessageData:"+messageData+"  ManualCreateTime:"+createTime);
+
+            channel.basicAck(deliveryTag, true);
+
             /*
              * 以下方式 消息回到队列尾部
              */
-            //手动进行应答
-            channel.basicAck(deliveryTag, false);
-            //重新发送消息到队尾
-            String exchange = message.getMessageProperties().getReceivedExchange();
-            String routingKey = message.getMessageProperties().getReceivedRoutingKey();
-            //TEXT_PLAIN消息持久化
-            channel.basicPublish(exchange, routingKey, MessageProperties.TEXT_PLAIN, JSON.toJSONBytes(jsonObject));
+//            //手动进行应答
+//            channel.basicAck(deliveryTag, false);
+//            //重新发送消息到队尾
+//            String exchange = message.getMessageProperties().getReceivedExchange();
+//            String routingKey = message.getMessageProperties().getReceivedRoutingKey();
+//            //TEXT_PLAIN消息持久化
+//            channel.basicPublish(exchange, routingKey, MessageProperties.TEXT_PLAIN, JSON.toJSONBytes(jsonObject));
         } catch (Exception e) {
             channel.basicReject(deliveryTag, false);
             e.printStackTrace();
